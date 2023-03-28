@@ -1,30 +1,50 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <header>
+    <input 
+      type="text"
+      class="header-input"
+      placeholder="Search"
+      v-model="keyword"
+      @change="searchMovies"
+    />
+  </header>
+  <main>
+    <div v-for="movie of movies" :key="movie.imdbID" class="movie-item">
+      <img :src="movie.Poster" :alt="movie.Title" class="movie-poster">
+      <h3 class="py-3 text-lg text-center">{{ movie.Title }} ({{ movie.Year }})</h3>
+    </div>
+  </main>
 </template>
 
+<script setup lang="ts">
+  import { ref, computed } from 'vue';
+  import store from './store/index';
+
+  const keyword = ref('');
+  const movies = computed(() => store.state.movies);
+
+  console.log(store.state.movies)
+
+  function searchMovies() {
+    store.dispatch('searchMovies', keyword.value);
+    console.log(store.state.movies)
+  }
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+  header {
+    height: 10rem;
+  }
+
+  .header-input {
+    width: 20rem;
+  }
+
+  .movie-item {
+    display: flex;
+  }
+
+  .movie-poster {
+    width: 10rem;
+  }
 </style>
